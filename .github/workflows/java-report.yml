@@ -1,11 +1,11 @@
-name: Rapport Java - BankApplication
+name: Java Report for BankApplication
 
 on:
   push:
   pull_request:
 
 jobs:
-  rapport-java:
+  java-report:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,40 +14,42 @@ jobs:
 
       - name: Analyse des fichiers Java et génération du rapport
         run: |
-          FICHIERS_JAVA=$(find . -name "*.java")
+          JAVA_FILES=$(find . -name "*.java")
 
-          if [ -z "$FICHIERS_JAVA" ]; then
+          # Échec si aucun fichier Java
+          if [ -z "$JAVA_FILES" ]; then
             echo "Erreur : aucun fichier .java trouvé dans le dépôt"
             exit 1
           fi
 
+          # Échec si des fichiers .class sont présents
           if find . -name "*.class" | grep -q .; then
-            echo "Erreur : des fichiers .class compilés sont présents dans le dépôt"
+            echo "Erreur : des fichiers compilés (.class) sont présents dans le dépôt"
             exit 1
           fi
 
-          echo "Rapport des fichiers Java" > rapport-fichiers-java.txt
-          echo "=========================" >> rapport-fichiers-java.txt
-          echo "" >> rapport-fichiers-java.txt
+          echo "Java File Report" > java-file-report.txt
+          echo "================" >> java-file-report.txt
+          echo "" >> java-file-report.txt
 
-          NOMBRE_FICHIERS=$(echo "$FICHIERS_JAVA" | wc -l)
-          TOTAL_LIGNES=0
+          FILE_COUNT=$(echo "$JAVA_FILES" | wc -l)
+          TOTAL_LINES=0
 
-          echo "Nombre de fichiers .java : $NOMBRE_FICHIERS" >> rapport-fichiers-java.txt
-          echo "" >> rapport-fichiers-java.txt
-          echo "Détail par fichier :" >> rapport-fichiers-java.txt
+          echo "Nombre de fichiers .java : $FILE_COUNT" >> java-file-report.txt
+          echo "" >> java-file-report.txt
+          echo "Détail par fichier (chemin - nombre de lignes) :" >> java-file-report.txt
 
-          for fichier in $FICHIERS_JAVA; do
-            LIGNES=$(wc -l < "$fichier")
-            TOTAL_LIGNES=$((TOTAL_LIGNES + LIGNES))
-            echo "$fichier - $LIGNES lignes" >> rapport-fichiers-java.txt
+          for file in $JAVA_FILES; do
+            LINES=$(wc -l < "$file")
+            TOTAL_LINES=$((TOTAL_LINES + LINES))
+            echo "$file - $LINES" >> java-file-report.txt
           done
 
-          echo "" >> rapport-fichiers-java.txt
-          echo "Nombre total de lignes de code : $TOTAL_LIGNES" >> rapport-fichiers-java.txt
+          echo "" >> java-file-report.txt
+          echo "Nombre total de lignes de code : $TOTAL_LINES" >> java-file-report.txt
 
-      - name: Publication du rapport en tant qu'artifact
+      - name: Upload du rapport en tant qu'artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rapport-java
-          path: rapport-fichiers-java.txt
+          name: java-file-report
+          path: java-file-report.txt
