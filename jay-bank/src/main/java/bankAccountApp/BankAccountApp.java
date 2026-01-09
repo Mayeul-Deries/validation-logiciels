@@ -208,7 +208,7 @@ public class BankAccountApp {
 			scan.close();
 		
 		try {
-			accManager.saveAccounts(accManager);
+			accManager.saveAccounts();
 		} catch (Exception e) {
 			System.out.println("Error writing to file");
 		}
