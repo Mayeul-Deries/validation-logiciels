@@ -113,4 +113,4 @@ public void saveAccounts() {
 
 ## Corrélation entre Issues SonarLint et Métriques WMC/CBO
 
-Les issues SonarQube apparaissent clairement plus souvent dans les classes avec des métriques élevées. **BankAccountApp** concentre le plus d'issues critiques avec sa complexité cognitive de 125, tandis que **Person** (WMC=23, LCOM=79) présente plusieurs problèmes liés à son manque de cohésion. En revanche, **Bank** (WMC=14, LCOM=0) n'a que des issues mineures malgré son CBO élevé, démontrant qu'une bonne cohésion compense un couplage modéré.
+Les issues SonarQube apparaissent plus souvent dans les classes avec des métriques élevées. **BankAccountApp** concentre le plus d'issues critiques avec sa complexité cognitive de 125, tandis que **Person** (WMC=23, LCOM=79) présente plusieurs problèmes liés à son manque de cohésion. En revanche, **Bank** (WMC=14, LCOM=0) n'a que des issues mineures malgré son CBO élevé, démontrant qu'une bonne cohésion compense un couplage modéré.
