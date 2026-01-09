@@ -1,0 +1,53 @@
+name: Rapport Java - BankApplication
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rapport-java:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: Analyse des fichiers Java et génération du rapport
+        run: |
+          FICHIERS_JAVA=$(find . -name "*.java")
+
+          if [ -z "$FICHIERS_JAVA" ]; then
+            echo "Erreur : aucun fichier .java trouvé dans le dépôt"
+            exit 1
+          fi
+
+          if find . -name "*.class" | grep -q .; then
+            echo "Erreur : des fichiers .class compilés sont présents dans le dépôt"
+            exit 1
+          fi
+
+          echo "Rapport des fichiers Java" > rapport-fichiers-java.txt
+          echo "=========================" >> rapport-fichiers-java.txt
+          echo "" >> rapport-fichiers-java.txt
+
+          NOMBRE_FICHIERS=$(echo "$FICHIERS_JAVA" | wc -l)
+          TOTAL_LIGNES=0
+
+          echo "Nombre de fichiers .java : $NOMBRE_FICHIERS" >> rapport-fichiers-java.txt
+          echo "" >> rapport-fichiers-java.txt
+          echo "Détail par fichier :" >> rapport-fichiers-java.txt
+
+          for fichier in $FICHIERS_JAVA; do
+            LIGNES=$(wc -l < "$fichier")
+            TOTAL_LIGNES=$((TOTAL_LIGNES + LIGNES))
+            echo "$fichier - $LIGNES lignes" >> rapport-fichiers-java.txt
+          done
+
+          echo "" >> rapport-fichiers-java.txt
+          echo "Nombre total de lignes de code : $TOTAL_LIGNES" >> rapport-fichiers-java.txt
+
+      - name: Publication du rapport en tant qu'artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-java
+          path: rapport-fichiers-java.txt
